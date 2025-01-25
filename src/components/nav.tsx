@@ -14,7 +14,6 @@ import {
 
 const navItems = [
   { title: "Home", href: "/" },
-  { title: "Top Rated", href: "/toprated" },
 
 ];
 
