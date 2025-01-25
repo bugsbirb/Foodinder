@@ -15,9 +15,9 @@ interface SwipeCardProps {
 }
 
 export const SwipeCard: React.FC<SwipeCardProps> = ({ profile, onSwipe }) => {
-  const [{ x, rotate }, api] = useSpring(() => ({ x: 0, rotate: 0 }));
+  const [ { x, rotate }, api ] = useSpring(() => ({ x: 0, rotate: 0 }));
 
-  // Use useDrag hook to get the bind function
+
   const bind = useDrag(
     ({ down, movement: [mx], direction: [xDir], velocity: [vx] }) => {
       const trigger = vx > 0.1;
@@ -43,17 +43,17 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({ profile, onSwipe }) => {
     }
   );
 
+  // @ts-ignore
+  const dragProps = bind();  
+
   return (
     <animated.div
       style={ {
-          transform: x.to((val) => `translate3d(${val}px, 0, 0)`),
-          rotate: rotate.to((val) => `${val}deg`),
-          touchAction: "none",
-        }
-      }
-      className="relative"
-      {...bind as any}
-
+        transform: x.interpolate((x) => `translate3d(${x}px, 0, 0)`),
+        rotate: rotate.interpolate((r) => `${r}deg`),
+        touchAction: "none",
+      }}
+      {...dragProps}  
     >
       <div className="w-72 h-96 shadow-xl bg-white rounded-lg overflow-hidden dark:bg-zinc-950 dark:border dark:border-zinc-600 dark:bg-border/50">
         <img
