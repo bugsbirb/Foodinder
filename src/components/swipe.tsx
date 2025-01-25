@@ -4,7 +4,6 @@ import { useDrag } from "@use-gesture/react";
 
 interface Profile {
   name: string;
-  age: number;
   bio: string;
   image?: string;
 }
@@ -63,7 +62,7 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({ profile, onSwipe }) => {
         />
         <div className="p-4">
           <h2 className="text-xl font-bold unselectable">
-            {profile.name}, {profile.age}
+            {profile.name}
           </h2>
           <p className="text-sm text-gray-600 unselectable">{profile.bio}</p>
         </div>

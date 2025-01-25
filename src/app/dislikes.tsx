@@ -26,7 +26,7 @@ export const DislikedProfiles: React.FC<DislikedProfilesProps> = ({ profiles, on
                 />
                 <div>
                   <h3 className="font-semibold">
-                    {profile.name}, {profile.age}
+                    {profile.name}
                   </h3>
                   <p className="text-sm text-gray-600">{profile.bio}</p>
                 </div>
