@@ -17,10 +17,11 @@ interface SwipeCardProps {
 export const SwipeCard: React.FC<SwipeCardProps> = ({ profile, onSwipe }) => {
   const [{ x, rotate }, api] = useSpring(() => ({ x: 0, rotate: 0 }));
 
+  // Use useDrag hook to get the bind function
   const bind = useDrag(
     ({ down, movement: [mx], direction: [xDir], velocity: [vx] }) => {
       const trigger = vx > 0.1;
-      const dir = xDir > 0 ? 1 : -1; 
+      const dir = xDir > 0 ? 1 : -1;
 
       if (!down && trigger) {
         api.start({
@@ -44,15 +45,17 @@ export const SwipeCard: React.FC<SwipeCardProps> = ({ profile, onSwipe }) => {
 
   return (
     <animated.div
-      style={{
-        transform: x.to((val) => `translate3d(${val}px, 0, 0)`),
-        rotate: rotate.to((val) => `${val}deg`),
-        touchAction: "none",
-      }}
+      style={ {
+          transform: x.to((val) => `translate3d(${val}px, 0, 0)`),
+          rotate: rotate.to((val) => `${val}deg`),
+          touchAction: "none",
+        }
+      }
       className="relative"
-      {...(bind() as any)}
+      {...bind as any}
+
     >
-      <div className="w-72 h-96 shadow-xl bg-white rounded-lg overflow-hidden ">
+      <div className="w-72 h-96 shadow-xl bg-white rounded-lg overflow-hidden dark:bg-zinc-950 dark:border dark:border-zinc-600 dark:bg-border/50">
         <img
           src={profile.image || "/placeholder.svg"}
           alt={profile.name}

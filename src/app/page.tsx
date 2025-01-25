@@ -1,44 +1,62 @@
 "use client"
-
-import React, { useState } from "react"
-import { SwipeCard } from "@/components/swipe"
-import { profiles, type Profile } from "./data"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Heart, X, ThumbsDown } from "lucide-react"
-import { LikedProfiles } from "./likes"
-import { DislikedProfiles } from "./dislikes"
-import { Navbar } from "@/components/nav"
+import React, { useState } from "react";
+import { SwipeCard } from "@/components/swipe";
+import { profiles, type Profile } from "./data";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Heart, X, ThumbsDown } from "lucide-react";
+import { LikedProfiles } from "./likes";
+import { DislikedProfiles } from "./dislikes";
+import { Navbar } from "@/components/nav";
 
 export default function TinderClone() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [lastDirection, setLastDirection] = useState<string | null>(null)
-  const [likedProfiles, setLikedProfiles] = useState<Profile[]>([])
-  const [dislikedProfiles, setDislikedProfiles] = useState<Profile[]>([])
-  const [showLikedProfiles, setShowLikedProfiles] = useState(false)
-  const [showDislikedProfiles, setShowDislikedProfiles] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [lastDirection, setLastDirection] = useState<string | null>(null);
+  const [likedProfiles, setLikedProfiles] = useState<Profile[]>([]);
+  const [dislikedProfiles, setDislikedProfiles] = useState<Profile[]>([]);
+  const [showLikedProfiles, setShowLikedProfiles] = useState(false);
+  const [showDislikedProfiles, setShowDislikedProfiles] = useState(false);
 
-  const handleSwipe = (direction: "left" | "right") => {
-    setLastDirection(direction)
+  const handleSwipe = async (direction: "left" | "right") => {
+    setLastDirection(direction);
     if (direction === "right") {
-      setLikedProfiles((prev) => [...prev, currentProfile])
+      await saveLikeDislike(direction); 
+      setLikedProfiles((prev) => [...prev, currentProfile]);
     } else {
-      setDislikedProfiles((prev) => [...prev, currentProfile])
+      setDislikedProfiles((prev) => [...prev, currentProfile]);
     }
-    nextProfile()
-  }
+    nextProfile();
+  };
 
   const nextProfile = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % profiles.length)
-  }
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % profiles.length);
+  };
 
-  const currentProfile: Profile = profiles[currentIndex]
+  const currentProfile: Profile = profiles[currentIndex];
+  const saveLikeDislike = async (direction: "right") => {
+    try {
+      const response = await fetch("/api/rate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: currentProfile.name,
+          foodId: currentProfile.id,
+          avatar: currentProfile.image,
+        }),
+      });
+      const data = await response.json();
+      console.log(data.message);
+    } catch (error) {
+      console.error("Error saving like:", error);
+    }
+  };
 
   return (
-
-    <><>
+    <>
       <Navbar />
-    </><div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-zinc-900">
         {showLikedProfiles ? (
           <LikedProfiles profiles={likedProfiles} onClose={() => setShowLikedProfiles(false)} />
         ) : showDislikedProfiles ? (
@@ -52,7 +70,7 @@ export default function TinderClone() {
               <Button
                 variant="outline"
                 size="icon"
-                className="rounded-full bg-white text-red-500 hover:bg-red-100 hover:text-red-600"
+                className="rounded-full bg-white text-red-500 hover:bg-red-100 hover:text-red-600 dark:bg-zinc-800"
                 onClick={() => handleSwipe("left")}
               >
                 <X className="h-6 w-6" />
@@ -60,7 +78,7 @@ export default function TinderClone() {
               <Button
                 variant="outline"
                 size="icon"
-                className="rounded-full bg-white text-green-500 hover:bg-green-100 hover:text-green-600"
+                className="rounded-full bg-white text-green-500 hover:bg-green-100 hover:text-green-600 dark:bg-zinc-800"
                 onClick={() => handleSwipe("right")}
               >
                 <Heart className="h-6 w-6" />
@@ -78,9 +96,9 @@ export default function TinderClone() {
             variant="outline"
             size="sm"
             onClick={() => {
-              setShowLikedProfiles(true)
-              setShowDislikedProfiles(false)
-            } }
+              setShowLikedProfiles(true);
+              setShowDislikedProfiles(false);
+            }}
           >
             <Heart className="mr-2 h-4 w-4" />
             View Liked Profiles
@@ -89,9 +107,9 @@ export default function TinderClone() {
             variant="outline"
             size="sm"
             onClick={() => {
-              setShowDislikedProfiles(true)
-              setShowLikedProfiles(false)
-            } }
+              setShowDislikedProfiles(true);
+              setShowLikedProfiles(false);
+            }}
           >
             <ThumbsDown className="mr-2 h-4 w-4" />
             View Disliked Profiles
@@ -103,14 +121,14 @@ export default function TinderClone() {
             size="sm"
             className="mt-4"
             onClick={() => {
-              setShowLikedProfiles(false)
-              setShowDislikedProfiles(false)
-            } }
+              setShowLikedProfiles(false);
+              setShowDislikedProfiles(false);
+            }}
           >
             Back to Swiping
           </Button>
         )}
-      </div></>
-  )
+      </div>
+    </>
+  );
 }
-
